@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>Отдай Пас — результаты матчей</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --pitch-dark:#123821;
+    --pitch:#1c5c38;
+    --pitch-line:#2f7a4c;
+    --lime:#c6ff3d;
+    --ink:#0f1712;
+    --paper:#f4f7ef;
+    --paper-2:#e9efe1;
+    --white:#ffffff;
+    --muted:#5b6b5f;
+    --rose:#c0453a;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    background:#0a0f0b;
+    font-family:'Inter',sans-serif;
+    color:var(--ink);
+    display:flex;
+    justify-content:center;
+    padding:32px 12px;
+    min-height:100vh;
+  }
+  .phone{
+    width:390px;
+    max-width:100%;
+    min-height:600px;
+    background:var(--paper);
+    border-radius:32px;
+    box-shadow:0 40px 80px rgba(0,0,0,0.55);
+    overflow:hidden;
+  }
+  .hero{
+    background:
+      radial-gradient(circle at 50% -10%, var(--pitch-line) 0%, transparent 55%),
+      repeating-linear-gradient(90deg, var(--pitch) 0 44px, var(--pitch-dark) 44px 88px);
+    padding:26px 20px 22px;
+    color:var(--white);
+  }
+  .eyebrow{ font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--lime); font-weight:700; }
+  .h1{ font-family:'Oswald',sans-serif; font-weight:700; font-size:22px; margin:8px 0 4px; }
+  .updated{ font-size:11.5px; color:rgba(255,255,255,0.65); margin-top:6px; }
+  .updated a{ color:rgba(255,255,255,0.8); }
+
+  .list{ padding:16px; display:flex; flex-direction:column; gap:10px; }
+
+  .card{
+    background:rgba(255,255,255,0.65);
+    border:1px solid rgba(255,255,255,0.8);
+    border-radius:16px;
+    padding:14px 14px;
+    box-shadow:0 6px 18px rgba(18,56,33,0.08);
+  }
+  .card-top{ display:flex; justify-content:space-between; align-items:center; font-size:11px; color:var(--muted); margin-bottom:8px; }
+  .card-tour{ font-weight:600; }
+  .card-venue{ text-align:right; }
+
+  .card-mid{ display:flex; align-items:center; justify-content:space-between; gap:10px; }
+  .team{ font-family:'Oswald',sans-serif; font-size:14px; font-weight:600; flex:1; line-height:1.2; }
+  .team.us{ color:var(--pitch-dark); }
+  .score{ font-family:'Oswald',sans-serif; font-size:20px; font-weight:700; color:var(--ink); white-space:nowrap; padding:0 6px; }
+
+  .card-bottom{ display:flex; justify-content:space-between; align-items:center; margin-top:10px; font-size:11.5px; color:var(--muted); }
+  .badge{
+    display:inline-flex; align-items:center; justify-content:center;
+    width:22px; height:22px; border-radius:50%; font-weight:700; font-size:12px; color:var(--white);
+  }
+  .badge.win{ background:var(--pitch); }
+  .badge.draw{ background:#8a8f66; }
+  .badge.loss{ background:var(--rose); }
+
+  .state{ padding:40px 20px; text-align:center; color:var(--muted); font-size:13.5px; }
+  .state a{ color:var(--pitch); }
+</style>
+</head>
+<body>
+<div class="phone">
+  <div class="hero">
+    <div class="eyebrow">ФА Отдай Пас</div>
+    <div class="h1">Результаты матчей</div>
+    <div class="updated" id="updatedLine">Загрузка…</div>
+  </div>
+  <div class="list" id="list">
+    <div class="state" id="stateMsg">Загрузка результатов…</div>
+  </div>
+</div>
+
+<script>
+function formatUpdated(iso){
+  try{
+    const d = new Date(iso);
+    return d.toLocaleString('ru-RU', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
+  }catch(e){ return iso; }
+}
+function badgeClass(result){
+  if(result==='В') return 'win';
+  if(result==='Н') return 'draw';
+  return 'loss';
+}
+function render(data){
+  document.getElementById('updatedLine').innerHTML =
+    'Обновлено: ' + formatUpdated(data.updated_at) +
+    ' &middot; источник: <a href="' + data.source + '" target="_blank" rel="noopener">zolotaybutsa.ru</a>';
+
+  const list = document.getElementById('list');
+  if(!data.matches || data.matches.length===0){
+    list.innerHTML = '<div class="state">Матчи пока не найдены</div>';
+    return;
+  }
+  list.innerHTML = data.matches.map(m=>{
+    const usName = 'ФА ОТДАЙ ПАС';
+    const homeName = m.is_home ? usName : m.opponent;
+    const awayName = m.is_home ? m.opponent : usName;
+    const homeScore = m.is_home ? m.our_score : m.opp_score;
+    const awayScore = m.is_home ? m.opp_score : m.our_score;
+    return `<div class="card">
+      <div class="card-top">
+        <span class="card-tour">${escapeHtml(m.tournament||'')}${m.tour ? ' · '+escapeHtml(m.tour) : ''}</span>
+        <span class="card-venue">${escapeHtml(m.date||'')}${m.time ? ', '+escapeHtml(m.time) : ''}</span>
+      </div>
+      <div class="card-mid">
+        <div class="team${m.is_home?' us':''}">${escapeHtml(homeName)}</div>
+        <div class="score">${homeScore ?? '?'} : ${awayScore ?? '?'}</div>
+        <div class="team${!m.is_home?' us':''}" style="text-align:right">${escapeHtml(awayName)}</div>
+      </div>
+      <div class="card-bottom">
+        <span>${escapeHtml(m.venue||'')}</span>
+        <span class="badge ${badgeClass(m.result)}">${escapeHtml(m.result||'?')}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+fetch('data/matches.json', { cache:'no-store' })
+  .then(r=>{ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
+  .then(render)
+  .catch(err=>{
+    document.getElementById('updatedLine').textContent = '';
+    document.getElementById('list').innerHTML = '<div class="state">Не удалось загрузить результаты (' + escapeHtml(err.message) + ')</div>';
+  });
+</script>
+</body>
+</html>
