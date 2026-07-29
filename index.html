@@ -202,6 +202,22 @@
   .ticket-row{ display:flex; justify-content:space-between; font-size:12.5px; margin-top:8px; color:rgba(255,255,255,0.85); }
   .ticket-row b{ color:var(--white); font-weight:600; }
 
+  /* match results */
+  .matches-updated{ font-size:11.5px; color:var(--muted); margin:-6px 0 14px; }
+  .matches-updated a{ color:var(--pitch); }
+  .match-top{ display:flex; justify-content:space-between; gap:8px; font-size:11px; color:rgba(255,255,255,0.6); margin-bottom:8px; }
+  .match-mid{ display:flex; align-items:center; justify-content:space-between; gap:8px; }
+  .match-team{ font-family:'Oswald',sans-serif; font-size:13.5px; font-weight:600; flex:1; line-height:1.25; }
+  .match-team.us{ color:var(--lime); }
+  .match-team.away{ text-align:right; }
+  .match-score{ font-family:'Oswald',sans-serif; font-size:19px; font-weight:700; color:var(--white); white-space:nowrap; padding:0 4px; }
+  .match-bottom{ display:flex; justify-content:space-between; align-items:center; margin-top:10px; font-size:11.5px; color:rgba(255,255,255,0.65); }
+  .match-badge{ display:inline-flex; align-items:center; justify-content:center; width:22px; height:22px; border-radius:50%; font-weight:700; font-size:12px; color:var(--ink); flex:0 0 auto; }
+  .match-badge.win{ background:var(--lime); }
+  .match-badge.draw{ background:#c9cf8f; }
+  .match-badge.loss{ background:#e08a7d; color:var(--white); }
+  .match-state{ text-align:center; color:var(--muted); font-size:13px; padding:24px 0; }
+
   .camp-banner{
     background:rgba(20,50,32,0.38);
     border-radius:20px; padding:20px; color:var(--white); margin:0 20px 18px;
@@ -630,6 +646,18 @@
       </div>
     </div>
 
+    <!-- MATCHES -->
+    <div class="screen" id="matches">
+      <div class="section" style="padding-top:26px;">
+        <div class="kicker">Результаты</div>
+        <div class="h2">Матчи команды</div>
+        <div class="matches-updated" id="matchesUpdated"></div>
+        <div id="matchesList">
+          <div class="match-state">Загрузка результатов…</div>
+        </div>
+      </div>
+    </div>
+
   </div>
 
   <div class="lightbox" id="lightbox" onclick="closeLightbox()">
@@ -649,6 +677,10 @@
     <button class="tab" data-tab="camps" onclick="showScreen('camps')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18"/></svg>
       Сборы
+    </button>
+    <button class="tab" data-tab="matches" onclick="showScreen('matches')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M18 17V9M13 17V5M8 17v-3"/></svg>
+      Матчи
     </button>
     <button class="tab" data-tab="signup" onclick="showScreen('signup')">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
@@ -694,6 +726,60 @@ async function submitForm(){
   const tgLink = 'https://t.me/sam_zey28?text=' + encodeURIComponent(text);
   setTimeout(function(){ window.location.href = tgLink; }, 600);
 }
+
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function matchBadgeClass(result){
+  if(result==='В') return 'win';
+  if(result==='Н') return 'draw';
+  return 'loss';
+}
+function formatMatchesUpdated(iso){
+  try{
+    const d = new Date(iso);
+    return d.toLocaleString('ru-RU', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
+  }catch(e){ return iso; }
+}
+function renderMatches(data){
+  document.getElementById('matchesUpdated').innerHTML =
+    'Обновлено: ' + formatMatchesUpdated(data.updated_at) +
+    ' · источник: <a href="' + data.source + '" target="_blank" rel="noopener">zolotaybutsa.ru</a>';
+
+  const list = document.getElementById('matchesList');
+  if(!data.matches || data.matches.length===0){
+    list.innerHTML = '<div class="match-state">Матчи пока не найдены</div>';
+    return;
+  }
+  const usName = data.team || 'ФА ОТДАЙ ПАС';
+  list.innerHTML = data.matches.map(m=>{
+    const homeName = m.is_home ? usName : m.opponent;
+    const awayName = m.is_home ? m.opponent : usName;
+    const homeScore = m.is_home ? m.our_score : m.opp_score;
+    const awayScore = m.is_home ? m.opp_score : m.our_score;
+    return `<div class="ticket">
+      <div class="match-top">
+        <span>${escapeHtml(m.tournament||'')}${m.tour ? ' · '+escapeHtml(m.tour) : ''}</span>
+        <span>${escapeHtml(m.date||'')}${m.time ? ', '+escapeHtml(m.time) : ''}</span>
+      </div>
+      <div class="match-mid">
+        <div class="match-team${m.is_home?' us':''}">${escapeHtml(homeName)}</div>
+        <div class="match-score">${homeScore ?? '?'} : ${awayScore ?? '?'}</div>
+        <div class="match-team away${!m.is_home?' us':''}">${escapeHtml(awayName)}</div>
+      </div>
+      <div class="match-bottom">
+        <span>${escapeHtml(m.venue||'')}</span>
+        <span class="match-badge ${matchBadgeClass(m.result)}">${escapeHtml(m.result||'?')}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+fetch('data/matches.json', { cache:'no-store' })
+  .then(r=>{ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
+  .then(renderMatches)
+  .catch(err=>{
+    document.getElementById('matchesList').innerHTML = '<div class="match-state">Не удалось загрузить результаты (' + escapeHtml(err.message) + ')</div>';
+  });
 </script>
 
 </body>
