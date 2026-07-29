@@ -101,7 +101,7 @@
     font-size:14px;font-weight:600;color:var(--ink);
     background:var(--paper);
   }
-  .screens{ flex:1; overflow-y:auto; -ms-overflow-style:none; scrollbar-width:none; }
+  .screens{ order:1; flex:1; overflow-y:auto; -ms-overflow-style:none; scrollbar-width:none; }
   .screens::-webkit-scrollbar{display:none;}
   .screen{ display:none; padding-bottom:24px; }
   .screen.active{ display:block; }
@@ -302,8 +302,10 @@
   .contact-btn.call{ background:rgba(28,92,56,0.55); color:var(--white); }
   .contact-btn.tg{ background:rgba(255,255,255,0.4); color:var(--ink); }
 
-  /* tabbar */
+  /* tabbar (kept early in the DOM so it paints immediately; `order` pins it
+     back to the bottom of the .phone flex column visually) */
   .tabbar{
+    order:2;
     flex:0 0 auto; display:flex; background:rgba(244,247,239,0.55);
     backdrop-filter:blur(24px) saturate(180%); -webkit-backdrop-filter:blur(24px) saturate(180%);
     border-top:1px solid rgba(255,255,255,0.5);
@@ -357,6 +359,33 @@
 
 <div class="phone">
   <div class="mesh-bg"><span></span><span></span><span></span><span></span><span></span><span></span></div>
+
+  <!-- Tabbar is placed early in the DOM (before the heavy .screens content,
+       which embeds a lot of inline base64 images) so it renders immediately
+       instead of waiting for the whole document to parse. It's still pinned
+       to the bottom visually via the `order` CSS property below. -->
+  <div class="tabbar">
+    <button class="tab active" data-tab="home" onclick="showScreen('home')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
+      Главная
+    </button>
+    <button class="tab" data-tab="schedule" onclick="showScreen('schedule')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 3v3M16 3v3"/></svg>
+      Расписание
+    </button>
+    <button class="tab" data-tab="camps" onclick="showScreen('camps')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18"/></svg>
+      Сборы
+    </button>
+    <button class="tab" data-tab="matches" onclick="showScreen('matches')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M18 17V9M13 17V5M8 17v-3"/></svg>
+      Матчи
+    </button>
+    <button class="tab" data-tab="signup" onclick="showScreen('signup')">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      Запись
+    </button>
+  </div>
 
   <div class="screens">
 
@@ -663,29 +692,6 @@
   <div class="lightbox" id="lightbox" onclick="closeLightbox()">
     <button class="lightbox-close" onclick="closeLightbox()">✕</button>
     <img id="lightbox-img" src="" alt="">
-  </div>
-
-  <div class="tabbar">
-    <button class="tab active" data-tab="home" onclick="showScreen('home')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></svg>
-      Главная
-    </button>
-    <button class="tab" data-tab="schedule" onclick="showScreen('schedule')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 3v3M16 3v3"/></svg>
-      Расписание
-    </button>
-    <button class="tab" data-tab="camps" onclick="showScreen('camps')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18"/></svg>
-      Сборы
-    </button>
-    <button class="tab" data-tab="matches" onclick="showScreen('matches')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><path d="M18 17V9M13 17V5M8 17v-3"/></svg>
-      Матчи
-    </button>
-    <button class="tab" data-tab="signup" onclick="showScreen('signup')">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-      Запись
-    </button>
   </div>
 </div>
 
