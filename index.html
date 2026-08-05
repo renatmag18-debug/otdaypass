@@ -359,6 +359,100 @@
   }
   .adv-card > *, .info-card > *, .ticket > *, .camp-banner > *, .gcard > *, .success > *{ position:relative; z-index:2; }
 </style>
+<script>
+function openLightbox(src){
+  document.getElementById('lightbox-img').src = src;
+  document.getElementById('lightbox').classList.add('open');
+}
+function closeLightbox(){
+  document.getElementById('lightbox').classList.remove('open');
+}
+document.addEventListener('click', function(e){
+  const img = e.target.closest('.gcard img, .achieve-card img');
+  if(img){ openLightbox(img.src); }
+});
+
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.querySelector('.tab[data-tab="'+id+'"]').classList.add('active');
+  document.querySelector('.screens').scrollTop = 0;
+}
+
+async function submitForm(){
+  const name = document.getElementById('f-name').value.trim();
+  const age = document.getElementById('f-age').value;
+  const phone = document.getElementById('f-phone').value.trim();
+  if(!name || !phone){
+    alert('Заполните имя и телефон');
+    return;
+  }
+
+  document.getElementById('form-wrap').style.display = 'none';
+  document.getElementById('success').style.display = 'block';
+
+  const text = `Здравствуйте! Хочу записаться на пробную тренировку.\nИмя ребёнка: ${name}\nВозраст: ${age}\nТелефон: ${phone}`;
+  const tgLink = 'https://t.me/sam_zey28?text=' + encodeURIComponent(text);
+  setTimeout(function(){ window.location.href = tgLink; }, 600);
+}
+
+function escapeHtml(s){
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function matchBadgeClass(result){
+  if(result==='В') return 'win';
+  if(result==='Н') return 'draw';
+  return 'loss';
+}
+function formatMatchesUpdated(iso){
+  try{
+    const d = new Date(iso);
+    return d.toLocaleString('ru-RU', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
+  }catch(e){ return iso; }
+}
+function renderMatches(data){
+  document.getElementById('matchesUpdated').innerHTML =
+    'Обновлено: ' + formatMatchesUpdated(data.updated_at) +
+    ' · источник: <a href="' + data.source + '" target="_blank" rel="noopener">zolotaybutsa.ru</a>';
+
+  const list = document.getElementById('matchesList');
+  if(!data.matches || data.matches.length===0){
+    list.innerHTML = '<div class="match-state">Матчи пока не найдены</div>';
+    return;
+  }
+  const usName = data.team || 'ФА ОТДАЙ ПАС';
+  list.innerHTML = data.matches.map(m=>{
+    const homeName = m.is_home ? usName : m.opponent;
+    const awayName = m.is_home ? m.opponent : usName;
+    const homeScore = m.is_home ? m.our_score : m.opp_score;
+    const awayScore = m.is_home ? m.opp_score : m.our_score;
+    return `<div class="ticket">
+      <div class="match-top">
+        <span>${escapeHtml(m.tournament||'')}${m.tour ? ' · '+escapeHtml(m.tour) : ''}</span>
+        <span>${escapeHtml(m.date||'')}${m.time ? ', '+escapeHtml(m.time) : ''}</span>
+      </div>
+      <div class="match-mid">
+        <div class="match-team${m.is_home?' us':''}">${escapeHtml(homeName)}</div>
+        <div class="match-score">${homeScore ?? '?'} : ${awayScore ?? '?'}</div>
+        <div class="match-team away${!m.is_home?' us':''}">${escapeHtml(awayName)}</div>
+      </div>
+      <div class="match-bottom">
+        <span>${escapeHtml(m.venue||'')}</span>
+        <span class="match-badge ${matchBadgeClass(m.result)}">${escapeHtml(m.result||'?')}</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+document.addEventListener('DOMContentLoaded', function() {
+  fetch('data/matches.json', { cache:'no-store' })
+  .then(r=>{ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
+  .then(renderMatches)
+  .catch(err=>{
+    document.getElementById('matchesList').innerHTML = '<div class="match-state">Не удалось загрузить результаты (' + escapeHtml(err.message) + ')</div>';
+  });
+});
+</script>
 </head>
 <body>
 
@@ -700,98 +794,7 @@
   </div>
 </div>
 
-<script>
-function openLightbox(src){
-  document.getElementById('lightbox-img').src = src;
-  document.getElementById('lightbox').classList.add('open');
-}
-function closeLightbox(){
-  document.getElementById('lightbox').classList.remove('open');
-}
-document.addEventListener('click', function(e){
-  const img = e.target.closest('.gcard img, .achieve-card img');
-  if(img){ openLightbox(img.src); }
-});
 
-function showScreen(id){
-  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
-  document.getElementById(id).classList.add('active');
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.querySelector('.tab[data-tab="'+id+'"]').classList.add('active');
-  document.querySelector('.screens').scrollTop = 0;
-}
-
-async function submitForm(){
-  const name = document.getElementById('f-name').value.trim();
-  const age = document.getElementById('f-age').value;
-  const phone = document.getElementById('f-phone').value.trim();
-  if(!name || !phone){
-    alert('Заполните имя и телефон');
-    return;
-  }
-
-  document.getElementById('form-wrap').style.display = 'none';
-  document.getElementById('success').style.display = 'block';
-
-  const text = `Здравствуйте! Хочу записаться на пробную тренировку.\nИмя ребёнка: ${name}\nВозраст: ${age}\nТелефон: ${phone}`;
-  const tgLink = 'https://t.me/sam_zey28?text=' + encodeURIComponent(text);
-  setTimeout(function(){ window.location.href = tgLink; }, 600);
-}
-
-function escapeHtml(s){
-  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-}
-function matchBadgeClass(result){
-  if(result==='В') return 'win';
-  if(result==='Н') return 'draw';
-  return 'loss';
-}
-function formatMatchesUpdated(iso){
-  try{
-    const d = new Date(iso);
-    return d.toLocaleString('ru-RU', { day:'2-digit', month:'2-digit', year:'numeric', hour:'2-digit', minute:'2-digit' });
-  }catch(e){ return iso; }
-}
-function renderMatches(data){
-  document.getElementById('matchesUpdated').innerHTML =
-    'Обновлено: ' + formatMatchesUpdated(data.updated_at) +
-    ' · источник: <a href="' + data.source + '" target="_blank" rel="noopener">zolotaybutsa.ru</a>';
-
-  const list = document.getElementById('matchesList');
-  if(!data.matches || data.matches.length===0){
-    list.innerHTML = '<div class="match-state">Матчи пока не найдены</div>';
-    return;
-  }
-  const usName = data.team || 'ФА ОТДАЙ ПАС';
-  list.innerHTML = data.matches.map(m=>{
-    const homeName = m.is_home ? usName : m.opponent;
-    const awayName = m.is_home ? m.opponent : usName;
-    const homeScore = m.is_home ? m.our_score : m.opp_score;
-    const awayScore = m.is_home ? m.opp_score : m.our_score;
-    return `<div class="ticket">
-      <div class="match-top">
-        <span>${escapeHtml(m.tournament||'')}${m.tour ? ' · '+escapeHtml(m.tour) : ''}</span>
-        <span>${escapeHtml(m.date||'')}${m.time ? ', '+escapeHtml(m.time) : ''}</span>
-      </div>
-      <div class="match-mid">
-        <div class="match-team${m.is_home?' us':''}">${escapeHtml(homeName)}</div>
-        <div class="match-score">${homeScore ?? '?'} : ${awayScore ?? '?'}</div>
-        <div class="match-team away${!m.is_home?' us':''}">${escapeHtml(awayName)}</div>
-      </div>
-      <div class="match-bottom">
-        <span>${escapeHtml(m.venue||'')}</span>
-        <span class="match-badge ${matchBadgeClass(m.result)}">${escapeHtml(m.result||'?')}</span>
-      </div>
-    </div>`;
-  }).join('');
-}
-fetch('data/matches.json', { cache:'no-store' })
-  .then(r=>{ if(!r.ok) throw new Error('HTTP '+r.status); return r.json(); })
-  .then(renderMatches)
-  .catch(err=>{
-    document.getElementById('matchesList').innerHTML = '<div class="match-state">Не удалось загрузить результаты (' + escapeHtml(err.message) + ')</div>';
-  });
-</script>
 
 </body>
 </html>
