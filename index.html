@@ -206,6 +206,25 @@
   .ticket-age{ font-family:'Oswald',sans-serif; font-size:17px; font-weight:700; color:var(--lime); }
   .ticket-row{ display:flex; justify-content:space-between; font-size:12.5px; margin-top:8px; color:rgba(255,255,255,0.85); }
   .ticket-row b{ color:var(--white); font-weight:600; }
+  .ticket-link{
+    display:flex; align-items:center; justify-content:center; gap:6px;
+    margin-top:12px; padding:10px 12px; border-radius:12px;
+    background:rgba(198,255,61,0.9); color:var(--ink);
+    font-size:12.5px; font-weight:700; text-decoration:none;
+    border:1px solid rgba(255,255,255,0.5);
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.7);
+  }
+
+  /* schedule venues */
+  .venue{ margin-bottom:18px; }
+  .venue-head{ display:flex; gap:10px; align-items:center; margin-bottom:10px; padding:0 2px; }
+  .venue-pin{
+    width:32px;height:32px;border-radius:10px;background:rgba(255,255,255,0.55);
+    border:1px solid rgba(255,255,255,0.6);
+    display:flex;align-items:center;justify-content:center; flex:0 0 auto; font-size:15px;
+  }
+  .venue-addr{ font-family:'Oswald',sans-serif; font-size:16px; font-weight:600; line-height:1.2; }
+  .venue-meta{ font-size:11.5px; color:var(--muted); margin-top:2px; }
 
   /* match results */
   .matches-updated{ font-size:11.5px; color:var(--muted); margin:-6px 0 14px; }
@@ -498,10 +517,10 @@ document.addEventListener('DOMContentLoaded', function() {
           </div>
           <div>
             <div class="club-name">ОТДАЙ ПАС</div>
-            <div class="club-sub">м. Новые Черемушки / м. Зюзино</div>
+            <div class="club-sub">м. Новые Черёмушки / м. Зюзино</div>
           </div>
         </div>
-        <div class="hero-line">Воспитываем и готовим будущих профессионалов большого футбола с самых юных лет — по современной методике, с тренерами категории FIFA C.</div>
+        <div class="hero-line">Приглашаем ребят от 4 до 14 лет в большую и дружную спортивную семью: тренируем по передовой испанской методике, играем турниры и вместе ездим на сборы.</div>
         <button class="hero-cta" onclick="showScreen('signup')">Записаться на пробную →</button>
       </div>
 
@@ -509,47 +528,54 @@ document.addEventListener('DOMContentLoaded', function() {
         <div class="kicker">Почему мы</div>
         <div class="h2">Плюсы академии</div>
         <div class="adv-grid">
-          <div class="adv-card"><div class="adv-num">FIFA C</div><div class="adv-text">Профессиональные тренеры нужной квалификации</div></div>
+          <div class="adv-card"><div class="adv-num">UEFA C</div><div class="adv-text">Дипломированный тренер нужной квалификации</div></div>
           <div class="adv-card"><div class="adv-num">3×</div><div class="adv-text">Тренировки в неделю: вторник, четверг, суббота / понедельник, среда, пятница</div></div>
-          <div class="adv-card"><div class="adv-num">3</div><div class="adv-text">Возрастные группы — от 4 до 16 лет</div></div>
+          <div class="adv-card"><div class="adv-num">4–14</div><div class="adv-text">Возрастные группы: 4–8 и 9–14 лет</div></div>
           <div class="adv-card"><div class="adv-num">✈︎</div><div class="adv-text">Круглогодичные сборы</div></div>
         </div>
       </div>
 
       <div class="section">
-        <div class="kicker">О нас в пяти фактах</div>
+        <div class="kicker">О нас</div>
         <div class="info-card" style="background:rgba(18,56,33,0.55); border-color:rgba(255,255,255,0.2);">
           <div>
-            <div class="info-title" style="color:var(--white); font-size:15px;">Футбольная академия «Отдай Пас»</div>
-            <div class="info-sub" style="color:rgba(255,255,255,0.85); margin-top:6px;">Растим чемпионов и сильные личности! Тренировки для детей от 4 до 14 лет.</div>
+            <div class="info-title" style="color:var(--white); font-size:15px;">Большая и дружная спортивная семья ⚽️❤️</div>
+            <div class="info-sub" style="color:rgba(255,255,255,0.85); margin-top:6px;">Дети обожают наши тренировки: здесь они находят верных друзей, учатся работать в команде и искренне радуются каждой личной победе. Мы создаём атмосферу, где ребёнка поддерживают, вдохновляют и помогают поверить в свои силы.</div>
+          </div>
+        </div>
+        <div class="info-card">
+          <div class="info-ic">🌱</div>
+          <div>
+            <div class="info-title">Максимальная польза</div>
+            <div class="info-sub">Укрепляем здоровье, развиваем выносливость, координацию и лидерские качества.</div>
           </div>
         </div>
         <div class="info-card">
           <div class="info-ic">🎓</div>
           <div>
-            <div class="info-title">Лицензированные тренеры</div>
-            <div class="info-sub">Наставники с высшим профильным образованием находят подход к каждому ребёнку, мотивируют и обучают без крика.</div>
+            <div class="info-title">Профессиональный подход</div>
+            <div class="info-sub">Занятия ведёт дипломированный тренер категории UEFA C — Самир Акифович. Находит подход к каждому ребёнку, мотивирует и обучает без крика.</div>
           </div>
         </div>
         <div class="info-card">
-          <div class="info-ic">🧠</div>
+          <div class="info-ic">🇪🇸</div>
           <div>
-            <div class="info-title">Умный тренировочный процесс</div>
-            <div class="info-sub">Программы строго адаптированы под возраст: от развивающих игр для малышей до серьёзной тактики для подростков.</div>
+            <div class="info-title">Современные стандарты</div>
+            <div class="info-sub">Тренируемся по передовой испанской методике детско-юношеских школ. Программы адаптированы под возраст: от развивающих игр для малышей до серьёзной тактики для подростков.</div>
           </div>
         </div>
         <div class="info-card">
-          <div class="info-ic">⚽️</div>
+          <div class="info-ic">🏆</div>
           <div>
-            <div class="info-title">Постоянная игровая практика</div>
-            <div class="info-sub">Проводим регулярные внутренние игры, участвуем в официальных турнирах и товарищеских матчах для закрепления навыков.</div>
+            <div class="info-title">Настоящая футбольная жизнь</div>
+            <div class="info-sub">Регулярно участвуем в официальных турнирах, проводим внутренние игры и товарищеские матчи для закрепления навыков.</div>
           </div>
         </div>
         <div class="info-card">
           <div class="info-ic">✈️</div>
           <div>
-            <div class="info-title">Круглогодичные сборы</div>
-            <div class="info-sub">Организуем зимние выезды в Подмосковье, летние тренировки на море и уникальные лагеря за рубежом.</div>
+            <div class="info-title">Командные сборы</div>
+            <div class="info-sub">Летом выезжаем всей командой на море — Сочи и Турция, а также в Беларусь и Подмосковье.</div>
           </div>
         </div>
         <div class="info-card">
@@ -580,8 +606,8 @@ document.addEventListener('DOMContentLoaded', function() {
         <div class="info-card">
           <div class="info-ic">📍</div>
           <div>
-            <div class="info-title">Новочеремушкинская ул., 64к2</div>
-            <div class="info-sub">м. Новые Черемушки</div>
+            <div class="info-title">Новочерёмушкинская ул., 64к2</div>
+            <div class="info-sub">м. Новые Черёмушки</div>
           </div>
         </div>
         <div class="info-card">
@@ -636,30 +662,70 @@ document.addEventListener('DOMContentLoaded', function() {
     <!-- SCHEDULE -->
     <div class="screen" id="schedule">
       <div class="section" style="padding-top:26px;">
-        <div class="kicker">Группы</div>
+        <div class="kicker">Адреса и группы</div>
         <div class="h2">Расписание тренировок</div>
 
-        <div class="ticket">
-          <div class="ticket-age">4–7 лет</div>
-          <div class="ticket-row"><span>Вт, Чт / Пн, Ср</span><b>18:00–18:40</b></div>
-          <div class="ticket-row"><span>Сб / Пт</span><b>11:00–11:40</b></div>
-        </div>
-        <div class="ticket">
-          <div class="ticket-age">8–11 лет</div>
-          <div class="ticket-row"><span>Вт, Чт / Пн, Ср</span><b>18:40–19:40</b></div>
-          <div class="ticket-row"><span>Сб / Пт</span><b>11:40–12:40</b></div>
-        </div>
-        <div class="ticket">
-          <div class="ticket-age">12–16 лет</div>
-          <div class="ticket-row"><span>Вт, Чт / Пн, Ср</span><b>19:40–20:40</b></div>
-          <div class="ticket-row"><span>Сб / Пт</span><b>12:40–13:40</b></div>
+        <div class="venue">
+          <div class="venue-head">
+            <div class="venue-pin">📍</div>
+            <div>
+              <div class="venue-addr">Новочерёмушкинская, 64к2</div>
+              <div class="venue-meta">м. Новые Черёмушки · вт, чт, сб</div>
+            </div>
+          </div>
+          <div class="ticket">
+            <div class="ticket-age">4–8 лет</div>
+            <div class="ticket-row"><span>Вторник, четверг</span><b>18:00</b></div>
+            <div class="ticket-row"><span>Суббота</span><b>11:00</b></div>
+            <a class="ticket-link" href="https://www.mos.ru/pgu2/activity/card/866134" target="_blank" rel="noopener">Записаться на mos.ru →</a>
+          </div>
+          <div class="ticket">
+            <div class="ticket-age">9–14 лет</div>
+            <div class="ticket-row"><span>Вторник, четверг</span><b>18:45</b></div>
+            <div class="ticket-row"><span>Суббота</span><b>11:45</b></div>
+            <a class="ticket-link" href="https://www.mos.ru/pgu2/activity/card/866142" target="_blank" rel="noopener">Записаться на mos.ru →</a>
+          </div>
         </div>
 
-        <div class="info-card" style="margin-top:4px;">
+        <div class="venue">
+          <div class="venue-head">
+            <div class="venue-pin">📍</div>
+            <div>
+              <div class="venue-addr">Болотниковская, 52к3</div>
+              <div class="venue-meta">м. Зюзино · пн, ср, пт</div>
+            </div>
+          </div>
+          <div class="ticket">
+            <div class="ticket-age">4–8 лет</div>
+            <div class="ticket-row"><span>Понедельник, среда, пятница</span><b>17:00</b></div>
+            <a class="ticket-link" href="https://www.mos.ru/pgu2/activity/card/868757" target="_blank" rel="noopener">Записаться на mos.ru →</a>
+          </div>
+          <div class="ticket">
+            <div class="ticket-age">9–14 лет</div>
+            <div class="ticket-row"><span>Понедельник, среда, пятница</span><b>17:40</b></div>
+            <a class="ticket-link" href="https://www.mos.ru/pgu2/activity/card/868759" target="_blank" rel="noopener">Записаться на mos.ru →</a>
+          </div>
+        </div>
+
+        <div class="info-card">
+          <div class="info-ic">💳</div>
+          <div>
+            <div class="info-title">Удобная запись и оплата</div>
+            <div class="info-sub">Раз в месяц через официальный портал mos.ru — по ссылке нужной группы выше.</div>
+          </div>
+        </div>
+        <div class="info-card">
           <div class="info-ic">⚽️</div>
           <div>
             <div class="info-title">Игры каждые выходные</div>
             <div class="info-sub">Матчи для закрепления навыков, полученных на тренировках.</div>
+          </div>
+        </div>
+        <div class="info-card">
+          <div class="info-ic">📞</div>
+          <div>
+            <div class="info-title">Вопросы по расписанию</div>
+            <div class="info-sub"><a href="tel:+79857228182" style="color:var(--pitch); font-weight:600; text-decoration:none;">+7 (985) 722-81-82</a> — Самир Акифович</div>
           </div>
         </div>
       </div>
@@ -729,7 +795,7 @@ document.addEventListener('DOMContentLoaded', function() {
           <div class="info-ic">👤</div>
           <div>
             <div class="info-title">Самир Акифович</div>
-            <div class="info-sub">Тренер, FIFA категория C</div>
+            <div class="info-sub">Дипломированный тренер, категория UEFA C</div>
           </div>
         </div>
       </div>
@@ -749,9 +815,8 @@ document.addEventListener('DOMContentLoaded', function() {
           <div class="field">
             <label>Возрастная группа</label>
             <select id="f-age">
-              <option>4–7 лет</option>
-              <option>8–11 лет</option>
-              <option>12–16 лет</option>
+              <option>4–8 лет</option>
+              <option>9–14 лет</option>
             </select>
           </div>
           <div class="field">
