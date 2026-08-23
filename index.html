@@ -113,29 +113,37 @@
 
   /* ---- HERO ---- */
   .hero{
-    background:
-      linear-gradient(180deg, rgba(5,12,8,0.30) 0%, rgba(5,12,8,0.66) 100%),
-      radial-gradient(circle at 50% -10%, var(--pitch-line) 0%, transparent 55%),
-      repeating-linear-gradient(90deg, var(--pitch) 0 44px, var(--pitch-dark) 44px 88px);
     position:relative;
-    padding:26px 22px 34px;
-    color:var(--white);
+    padding:26px 22px 76px;
+    color:var(--ink);
     overflow:hidden;
   }
-  .hero::before{
+  /* Фон поля вынесен отдельным слоем: так его низ можно растворить
+     в фоне страницы, а текст и кнопки поверх остаются непрозрачными. */
+  .hero-bg{
+    position:absolute; inset:0; z-index:0;
+    background:
+      radial-gradient(circle at 50% -12%, rgba(198,255,61,0.45) 0%, transparent 58%),
+      repeating-linear-gradient(90deg, #bcdda9 0 44px, #abd396 44px 88px);
+    -webkit-mask-image:linear-gradient(180deg, #000 56%, rgba(0,0,0,0.55) 82%, transparent 100%);
+    mask-image:linear-gradient(180deg, #000 56%, rgba(0,0,0,0.55) 82%, transparent 100%);
+  }
+  .hero-bg::before{
     content:"";
     position:absolute; left:50%; top:64%; width:230px; height:230px;
-    border:2px solid rgba(255,255,255,0.10); border-radius:50%;
+    border:2px solid rgba(255,255,255,0.75); border-radius:50%;
     transform:translate(-50%,-50%);
   }
-  .hero::after{
+  .hero-bg::after{
     content:"";
     position:absolute; left:0; right:0; top:64%;
-    border-top:2px solid rgba(255,255,255,0.10);
+    border-top:2px solid rgba(255,255,255,0.75);
   }
+  .hero > *:not(.hero-bg){ position:relative; z-index:2; }
+  .hero + .section{ padding-top:8px; }
   .eyebrow{
     font-size:11px; letter-spacing:.14em; text-transform:uppercase;
-    color:var(--lime); font-weight:700; position:relative; z-index:2;
+    color:var(--pitch); font-weight:700; position:relative; z-index:2;
   }
   .crest-row{ display:flex; align-items:center; gap:14px; margin-top:12px; position:relative; z-index:2;}
   .crest{
@@ -144,22 +152,23 @@
     border:3px solid var(--lime);
     overflow:hidden;
     flex:0 0 auto;
+    box-shadow:0 6px 16px rgba(18,56,33,0.28);
   }
   .crest img{
     width:100%;height:100%;object-fit:cover;display:block;
   }
   .club-name{ font-family:'Oswald',sans-serif; font-weight:700; font-size:26px; line-height:1.05; }
-  .club-sub{ font-size:12.5px; color:rgba(255,255,255,0.72); margin-top:3px; }
+  .club-sub{ font-size:12.5px; color:var(--muted); margin-top:3px; }
   .hero-line{
-    margin-top:20px; font-size:15.5px; line-height:1.6; color:var(--white);
+    margin-top:20px; font-size:15.5px; line-height:1.6; color:var(--ink);
     position:relative; z-index:2; max-width:300px;
   }
   .hero-cta{
     margin-top:18px; display:inline-flex; align-items:center; gap:8px;
     background:var(--lime); color:var(--ink); font-weight:700; font-size:14px;
-    padding:12px 18px; border-radius:16px; border:1px solid rgba(255,255,255,0.6); position:relative; z-index:2;
+    padding:12px 18px; border-radius:16px; border:1px solid rgba(255,255,255,0.7); position:relative; z-index:2;
     font-family:'Inter',sans-serif;
-    box-shadow:0 8px 20px rgba(0,0,0,0.25), inset 0 1px 0 rgba(255,255,255,0.8);
+    box-shadow:0 8px 20px rgba(18,56,33,0.20), inset 0 1px 0 rgba(255,255,255,0.9);
   }
   .hero-actions{
     margin-top:18px; max-width:280px;
@@ -168,10 +177,10 @@
   }
   .hero-actions .hero-cta{ margin-top:0; justify-content:center; text-align:center; }
   .hero-cta.ghost{
-    background:rgba(255,255,255,0.16); color:var(--white);
-    border:1px solid rgba(255,255,255,0.45);
+    background:rgba(255,255,255,0.82); color:var(--pitch-dark);
+    border:1px solid rgba(255,255,255,0.9);
     backdrop-filter:blur(16px) saturate(160%); -webkit-backdrop-filter:blur(16px) saturate(160%);
-    box-shadow:0 8px 20px rgba(0,0,0,0.2), inset 0 1px 0 rgba(255,255,255,0.28);
+    box-shadow:0 8px 20px rgba(18,56,33,0.14), inset 0 1px 0 rgba(255,255,255,0.95);
   }
 
   /* ---- SECTIONS ---- */
@@ -523,6 +532,7 @@ document.addEventListener('DOMContentLoaded', function() {
     <!-- HOME -->
     <div class="screen active" id="home">
       <div class="hero">
+        <div class="hero-bg"></div>
         <div class="eyebrow">Футбольная академия</div>
         <div class="crest-row">
           <div class="crest">
