@@ -554,6 +554,15 @@
   .dark .contact-btn.call{ background:rgba(198,255,61,0.9); color:var(--ink); }
   .dark .contact-btn.tg{ background:rgba(255,255,255,0.10); color:#eef5ef; border-color:rgba(255,255,255,0.18); }
 
+  /* Подсветка нажатия на мобильных рисуется прямоугольником и не
+     считается со скруглением — вокруг круглой кнопки темы получался
+     квадрат. Гасим её, а фокус с клавиатуры оставляем видимым. */
+  button, a{ -webkit-tap-highlight-color:transparent; }
+  button:focus-visible, a:focus-visible{
+    outline:2px solid var(--lime);
+    outline-offset:2px;
+  }
+
   /* ---------- плавная смена темы ----------
      Кросс-фейд всего экрана: перекрывает и градиенты в шапке, которые
      обычными переходами не анимируются. */
