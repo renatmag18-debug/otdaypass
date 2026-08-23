@@ -439,8 +439,187 @@
     background:linear-gradient(125deg, rgba(255,255,255,0.65) 0%, rgba(255,255,255,0.08) 22%, rgba(255,255,255,0) 45%);
   }
   .adv-card > *, .info-card > *, .ticket > *, .camp-banner > *, .gcard > *, .success > *{ position:relative; z-index:2; }
+
+  /* ---------- кнопка смены темы ----------
+     Селектор через .hero: правило .hero > *:not(.hero-bg) выше по
+     специфичности и иначе сбивает кнопке позиционирование. */
+  .hero .theme-toggle{
+    position:absolute; top:22px; right:20px; z-index:5;
+    width:40px; height:40px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    background:rgba(255,255,255,0.72);
+    border:1px solid rgba(255,255,255,0.9);
+    box-shadow:0 6px 16px rgba(18,56,33,0.16), inset 0 1px 0 rgba(255,255,255,0.95);
+    backdrop-filter:blur(14px) saturate(160%); -webkit-backdrop-filter:blur(14px) saturate(160%);
+    color:var(--pitch-dark); cursor:pointer; padding:0;
+  }
+  .hero .theme-toggle svg{ width:20px; height:20px; }
+  .hero .theme-toggle .ico-sun{ display:none; }
+
+  /* ================= ТЁМНАЯ ТЕМА =================
+     Класс ставится на <html> скриптом в <head>, до первой отрисовки —
+     иначе на долю секунды мелькала бы светлая тема. */
+  html.dark{
+    --paper:#0d1a12;
+    --muted:#9db3a5;
+    background:#050906;
+  }
+  .dark body{ background:#050906; }
+  .dark .phone{ background:var(--paper); }
+  .dark .mesh-bg{ opacity:0.28; }
+  .dark .mesh-bg span{ filter:blur(48px); }
+
+  /* шапка: поле темнеет, разметка остаётся белой, но тише */
+  .dark .hero{ color:#eef5ef; }
+  .dark .hero-bg{
+    background:
+      linear-gradient(180deg, rgba(5,12,8,0.22) 0%, rgba(5,12,8,0.60) 100%),
+      radial-gradient(circle at 50% -12%, rgba(47,122,76,0.5) 0%, transparent 58%),
+      repeating-linear-gradient(90deg, #17472a 0 44px, #0f3320 44px 88px);
+  }
+  .dark .hero-bg::before{ border-color:rgba(255,255,255,0.22); }
+  .dark .hero-bg::after{ border-top-color:rgba(255,255,255,0.22); }
+  .dark .eyebrow{ color:var(--lime); }
+  /* у строки приглашения задан свой цвет, наследование её не догоняет */
+  .dark .hero-line{ color:#eef5ef; }
+  .dark .club-sub{ color:#9db3a5; }
+  .dark .hero-cta.ghost{
+    background:rgba(255,255,255,0.14); color:#eef5ef;
+    border-color:rgba(255,255,255,0.4);
+    box-shadow:0 8px 20px rgba(0,0,0,0.28), inset 0 1px 0 rgba(255,255,255,0.22);
+  }
+  .dark .hero .theme-toggle{
+    background:rgba(255,255,255,0.12);
+    border-color:rgba(255,255,255,0.28);
+    box-shadow:0 6px 16px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.18);
+    color:var(--lime);
+  }
+  .dark .hero .theme-toggle .ico-moon{ display:none; }
+  .dark .hero .theme-toggle .ico-sun{ display:block; }
+
+  /* заголовки и подписи */
+  .dark .h2,
+  .dark .info-title,
+  .dark .venue-addr{ color:#eef5ef; }
+  .dark .kicker,
+  .dark .adv-num{ color:var(--lime); }
+  .dark .info-sub a,
+  .dark .matches-updated a{ color:var(--lime) !important; }
+
+  /* стеклянные карточки становятся тёмными */
+  .dark .adv-card,
+  .dark .info-card,
+  .dark .gcard,
+  .dark .ticket{
+    background:rgba(255,255,255,0.06);
+    border-color:rgba(255,255,255,0.12);
+    box-shadow:0 8px 24px rgba(0,0,0,0.38), inset 0 1px 0 rgba(255,255,255,0.08);
+  }
+  .dark .info-ic,
+  .dark .venue-pin{
+    background:rgba(255,255,255,0.10);
+    border-color:rgba(255,255,255,0.14);
+  }
+  .dark .adv-card::before, .dark .info-card::before,
+  .dark .ticket::before,  .dark .camp-banner::before,
+  .dark .gcard::before,   .dark .success::before{
+    background:linear-gradient(125deg, rgba(255,255,255,0.16) 0%, rgba(255,255,255,0.03) 22%, rgba(255,255,255,0) 45%);
+  }
+
+  /* нижнее меню */
+  .dark .tabbar{
+    background:rgba(13,26,18,0.78);
+    border-top-color:rgba(255,255,255,0.10);
+    box-shadow:0 -8px 24px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.06);
+  }
+  .dark .tab{ color:#8fa596; }
+  .dark .tab.active{ color:var(--lime); }
+
+  /* форма записи и контакты */
+  .dark .field label{ color:#9db3a5; }
+  .dark .field input,
+  .dark .field select{
+    background:rgba(255,255,255,0.08);
+    border-color:rgba(255,255,255,0.14);
+    color:#eef5ef;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,0.08);
+  }
+  .dark .field input::placeholder{ color:#7b9186; }
+  .dark .submit-btn{
+    background:var(--lime); color:var(--ink);
+    border-color:rgba(255,255,255,0.5);
+    box-shadow:0 8px 22px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.7);
+  }
+  .dark .success{ background:rgba(255,255,255,0.06); border-color:rgba(198,255,61,0.5); }
+  .dark .contact-btn.call{ background:rgba(198,255,61,0.9); color:var(--ink); }
+  .dark .contact-btn.tg{ background:rgba(255,255,255,0.10); color:#eef5ef; border-color:rgba(255,255,255,0.18); }
+
+  /* ---------- плавная смена темы ----------
+     Кросс-фейд всего экрана: перекрывает и градиенты в шапке, которые
+     обычными переходами не анимируются. */
+  @media (prefers-reduced-motion: no-preference){
+    ::view-transition-old(root),
+    ::view-transition-new(root){
+      animation-duration:.45s;
+      animation-timing-function:cubic-bezier(.4,0,.2,1);
+    }
+  }
+  /* запасной путь для браузеров без кросс-фейда: плавно меняем цвета */
+  .theme-anim body, .theme-anim .phone, .theme-anim .hero,
+  .theme-anim .tabbar, .theme-anim .tab,
+  .theme-anim .adv-card, .theme-anim .info-card,
+  .theme-anim .gcard, .theme-anim .ticket,
+  .theme-anim .info-ic, .theme-anim .venue-pin,
+  .theme-anim .h2, .theme-anim .kicker, .theme-anim .adv-num,
+  .theme-anim .adv-text, .theme-anim .info-title, .theme-anim .info-sub,
+  .theme-anim .venue-addr, .theme-anim .venue-meta,
+  .theme-anim .hero-line, .theme-anim .club-sub, .theme-anim .eyebrow,
+  .theme-anim .field input, .theme-anim .field select,
+  .theme-anim .submit-btn, .theme-anim .contact-btn,
+  .theme-anim .hero .theme-toggle{
+    transition:background-color .42s ease, color .42s ease,
+               border-color .42s ease, box-shadow .42s ease;
+  }
 </style>
 <script>
+/* Тема. По умолчанию тёмная; светлую человек выбирает сам, и выбор
+   запоминается. Класс ставится на <html> прямо здесь, до отрисовки
+   страницы — иначе при каждом заходе мелькала бы светлая тема. */
+(function(){
+  var choice = null;
+  try{ choice = localStorage.getItem('opTheme'); }catch(e){}
+  var dark = choice !== 'light';
+  if(dark){ document.documentElement.classList.add('dark'); }
+  var meta = document.querySelector('meta[name="theme-color"]');
+  if(meta){ meta.setAttribute('content', dark ? '#0d1a12' : '#bcdda9'); }
+})();
+
+function applyTheme(dark){
+  document.documentElement.classList.toggle('dark', dark);
+  try{ localStorage.setItem('opTheme', dark ? 'dark' : 'light'); }catch(e){}
+  var meta = document.querySelector('meta[name="theme-color"]');
+  if(meta){ meta.setAttribute('content', dark ? '#0d1a12' : '#bcdda9'); }
+}
+
+function toggleTheme(){
+  var next = !document.documentElement.classList.contains('dark');
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if(reduce){ applyTheme(next); return; }
+
+  /* Плавный переход. Основной путь — кросс-фейд всего экрана: он
+     перекрывает и градиенты в шапке, которые обычными переходами
+     не анимируются. Где такого нет — плавно меняем хотя бы цвета. */
+  if(document.startViewTransition){
+    document.startViewTransition(function(){ applyTheme(next); });
+    return;
+  }
+  var root = document.documentElement;
+  root.classList.add('theme-anim');
+  setTimeout(function(){ root.classList.remove('theme-anim'); }, 460);
+  applyTheme(next);
+}
+
 function openLightbox(src){
   document.getElementById('lightbox-img').src = src;
   document.getElementById('lightbox').classList.add('open');
@@ -632,6 +811,10 @@ document.addEventListener('DOMContentLoaded', function() {
     <div class="screen active" id="home">
       <div class="hero">
         <div class="hero-bg"></div>
+        <button class="theme-toggle" onclick="toggleTheme()" aria-label="Сменить тему" title="Сменить тему">
+          <svg class="ico-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+          <svg class="ico-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+        </button>
         <div class="eyebrow">Футбольная академия</div>
         <div class="crest-row">
           <div class="crest">
